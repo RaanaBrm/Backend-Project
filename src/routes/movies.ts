@@ -111,7 +111,6 @@ router.post('/', async (req: Request<{}, {}, {
     adult: boolean;
 }>, res: Response): Promise<any> => {
     try {
-        console.log(req.body);
         //validate input
         const { original_title,
             overview,
