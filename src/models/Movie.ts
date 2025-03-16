@@ -3,17 +3,29 @@ import mongoose, { Document, Schema, ObjectId } from "mongoose";
 
 export interface IMovie extends Document {
     _id: ObjectId;
-    originalTitle: string;
+    movie_id: number;
+    original_title: string;
     overview: string;
-    relaseDate: Date;
-    voteAverage: number;
+    release_date: Date;
+    vote_average: number;
+    poster_path: string;
+    backdrop_path: string;
+    original_language: string;
+    adult: boolean;
+
 };
 
 const MovieSchema: Schema = new Schema({
-    originalTitle: { type: String, required: true },
+    movie_id: { type: Number },
+    original_title: { type: String, required: true },
     overview: { type: String },
-    relaseDate: { type: Date },
-    voteAverage: { type: Number }
+    release_date: { type: Date },
+    vote_average: { type: Number },
+    poster_path: { type: String },
+    backdrop_path: { type: String },
+    original_language: { type: String },
+    adult: { type: Boolean }
+
 });
 
 export default mongoose.model<IMovie>("Movie", MovieSchema);

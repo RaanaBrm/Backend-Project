@@ -11,53 +11,53 @@ const router = express.Router();
 router.get('/', async (req: Request<{}, {}, {}, {
     page?: number;
     limit?: number;
-    originalTitle?: string;
+    original_title?: string;
     overview?: string;
-    relaseDate?: string;
-    voteAverage?: string;
+    release_date?: string;
+    vote_average?: string;
 }>, res: Response): Promise<any> => {
     try {
         let {
             page = 1,
             limit = 10,
-            originalTitle = null,
+            original_title: original_title = null,
             overview = null,
-            relaseDate = null,
-            voteAverage = null
+            release_date: release_date = null,
+            vote_average: vote_average = null
         } = req.query;
 
         const skip = (page - 1) * limit;
 
 
         let query: {
-            originalTitle?: { $regex: string; $options: string; };
+            original_title?: { $regex: string; $options: string; };
             overview?: { $regex: string; $options: string; };
-            relaseDate?: {
+            release_date?: {
                 $gte?: Date;
                 $lte?: Date;
             },
-            voteAverage?: {
+            vote_average?: {
                 $gte?: number;
                 $lte?: number;
             };
         } = {};
 
-        if (originalTitle) {
-            query.originalTitle = { $regex: originalTitle, $options: 'i' };
+        if (original_title) {
+            query.original_title = { $regex: original_title, $options: 'i' };
         }
         if (overview) {
             query.overview = { $regex: overview, $options: 'i' };
         }
-        if (relaseDate) {
-            query.relaseDate = {
-                $gte: new Date(relaseDate),
-                $lte: new Date(relaseDate)
+        if (release_date) {
+            query.release_date = {
+                $gte: new Date(release_date),
+                $lte: new Date(release_date)
             };
         }
-        if (voteAverage) {
-            query.voteAverage = {
-                $gte: Number(voteAverage),
-                $lte: Number(voteAverage)
+        if (vote_average) {
+            query.vote_average = {
+                $gte: Number(vote_average),
+                $lte: Number(vote_average)
             };
         }
 
@@ -65,7 +65,7 @@ router.get('/', async (req: Request<{}, {}, {}, {
         const movies = await Movie
             .find(query)
             .skip(skip).limit(limit)
-            .sort({ relaseDate: -1 });
+            .sort({ release_date: -1 });
 
         const total = await Movie.countDocuments(query);
 
@@ -99,22 +99,44 @@ router.get('/:id', async (req: Request, res: Response): Promise<any> => {
 });
 
 //create movie
-router.post('/', async (req: Request<{}, {}, { originalTitle: string; overview: string; relaseDate: Date; voteAverage: number }>, res: Response): Promise<any> => {
+router.post('/', async (req: Request<{}, {}, {
+    movie_id: number;
+    original_title: string;
+    overview: string;
+    release_date: Date;
+    vote_average: number;
+    poster_path: string;
+    backdrop_path: string;
+    original_language: string;
+    adult: boolean;
+}>, res: Response): Promise<any> => {
     try {
-
+        console.log(req.body);
         //validate input
-        const { originalTitle, overview, relaseDate, voteAverage } = req.body;
+        const { original_title,
+            overview,
+            release_date,
+            vote_average,
+            poster_path,
+            backdrop_path,
+            original_language,
+            adult
+        } = req.body;
 
-        if (!originalTitle) {
+        if (!original_title) {
             return httpResponse(400, "Bad Request", {}, res)
         }
 
         //create new movie
         const newMovie = new Movie({
-            originalTitle,
+            original_title,
             overview,
-            relaseDate,
-            voteAverage
+            release_date,
+            vote_average,
+            poster_path,
+            backdrop_path,
+            original_language,
+            adult
         });
 
         //save movie
@@ -142,10 +164,10 @@ router.put('/:id', async (req: Request<{ id: ObjectId }, {}, { originalTitle: st
             return httpResponse(404, "Movie not found", {}, res)
         }
 
-        movie.originalTitle = originalTitle || movie.originalTitle;
+        movie.original_title = originalTitle || movie.original_title;
         movie.overview = overview || movie.overview;
-        movie.relaseDate = relaseDate || movie.relaseDate;
-        movie.voteAverage = voteAverage || movie.voteAverage;
+        movie.release_date = relaseDate || movie.release_date;
+        movie.vote_average = voteAverage || movie.vote_average;
 
         await movie.save();
 
