@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import { connectToDatabase } from './lib/dbConnections.ts';
 
@@ -20,6 +21,8 @@ async function start() {
 
     // create new express application
     const app = express();
+    app.use(cors());
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
