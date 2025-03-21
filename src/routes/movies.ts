@@ -3,6 +3,7 @@ import { ObjectId } from 'mongoose';
 import { httpResponse } from '../lib/httpResponse.ts';
 
 import Movie from '../models/Movie.ts';
+import { error } from 'console';
 
 const router = express.Router();
 
@@ -191,5 +192,20 @@ router.delete('/:id', async (req: Request, res: Response): Promise<any> => {
     }
 });
 
+router.patch('/:id', async (req: Request<{id: ObjectId}, {}, {originalTitle: string}>, res: Response): Promise<any> => {
+    try{
+        const { id } = req.params;
+        const { originalTitle } = req.body;
+        await Movie.findOneAndUpdate(
+            {_id: id},
+            {original_title: originalTitle}
+        );
+        return httpResponse(201, "Update successfully", {}, res);
+    }
+    catch{
+        console.log(error);
+        return httpResponse(500, "Internal sercer error", {}, res);
+    }
+});
 
 export default router;
