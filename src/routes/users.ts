@@ -42,4 +42,5 @@ router.post('/', async (req: Request<{}, {}, { name: string; email: string; pass
     }
 });
 
+
 export default router;
