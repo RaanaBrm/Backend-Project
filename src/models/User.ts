@@ -6,13 +6,16 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
+    salt: string;
     setPassword: (password: string) => void;
+    validatePassword: (password: string) => boolean;
 };
 
 const UserSchema: Schema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    salt: { type: String, required: true },
 });
 
 UserSchema.methods.setPassword = function (password: string) {

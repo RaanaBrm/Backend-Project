@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import { ObjectId } from 'mongoose';
 import { httpResponse } from '../lib/httpResponse.ts';
 
+import authenticateToken from './../middleware/authMiddleware.ts';
+
 import Movie from '../models/Movie.ts';
 
 const router = express.Router();
@@ -179,7 +181,7 @@ router.put('/:id', async (req: Request<{ id: ObjectId }, {}, { originalTitle: st
 });
 
 // delete movie
-router.delete('/:id', async (req: Request, res: Response): Promise<any> => {
+router.delete('/:id', authenticateToken, async (req: Request, res: Response): Promise<any> => {
     try {
         const { id } = req.params;
         await Movie.findByIdAndDelete(id);
